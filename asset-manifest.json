@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/hex-tools/static/css/main.eba254d8.css",
+    "main.js": "/hex-tools/static/js/main.a5c75051.js",
+    "index.html": "/hex-tools/index.html",
+    "main.eba254d8.css.map": "/hex-tools/static/css/main.eba254d8.css.map",
+    "main.a5c75051.js.map": "/hex-tools/static/js/main.a5c75051.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.eba254d8.css",
+    "static/js/main.a5c75051.js"
+  ]
+}
