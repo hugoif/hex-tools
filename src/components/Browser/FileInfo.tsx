@@ -1,6 +1,6 @@
 import React from "react";
 import Table from "react-bootstrap/table";
-import { toHumanReadable } from "services/format";
+import { toHexString, toHumanReadable } from "services/format";
 
 import { HugoStory } from "services/hexparser";
 
@@ -9,7 +9,7 @@ interface FileInfoProps {
 }
 
 const FileInfo: React.FC<FileInfoProps> = ({ data }) => {
-    const { compilerVersion, counts, file, id, serial, textbank } = data;
+    const { compilerVersion, counts, file, id, ifids, serial, textbank } = data;
 
     return <section>
         <header>
@@ -41,7 +41,7 @@ const FileInfo: React.FC<FileInfoProps> = ({ data }) => {
                         Compiler version
                     </th>
                     <td>
-                        {compilerVersion}
+                        {compilerVersion.toFixed( 1 )}
                     </td>
                 </tr>
                 <tr>
@@ -49,7 +49,7 @@ const FileInfo: React.FC<FileInfoProps> = ({ data }) => {
                         ID string
                     </th>
                     <td>
-                        {id}
+                        {toHexString( id )}
                         {id === 9252 && <span>{" "}("$$", precompiled headers)</span>}
                     </td>
                 </tr>
@@ -59,6 +59,16 @@ const FileInfo: React.FC<FileInfoProps> = ({ data }) => {
                     </th>
                     <td>
                         {serial}
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        IFID (inferred)
+                    </th>
+                    <td>
+                        {ifids.map( ifid => <div key={ifid}>
+                            {ifid}
+                        </div> )}
                     </td>
                 </tr>
             </tbody>

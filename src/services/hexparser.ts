@@ -1,3 +1,5 @@
+import { toHexString } from "./format";
+
 interface HugoAddresses {
     code: number,
     endgame: number,
@@ -63,6 +65,7 @@ export interface HugoStory {
     globals: HugoGlobals;
     grammar: HugoGrammars;
     id: number;
+    ifids: string[];
     objects: HugoObjects;
     serial: string;
     specialwords: HugoSpecialWords;
@@ -86,25 +89,6 @@ export const parseHexFile = ( storyfile: ArrayBuffer ): HugoStory => {
     buffer = new Uint8Array();
 
     return data;
-};
-
-export const toHexString = ( value: number | string ): string => {
-    const num = Number( value );
-    let prefix = "";
-
-    if( num < 0 ) {
-        prefix = "-";
-    }
-
-    prefix += "0x";
-
-    const hexval = Math.abs( num ).toString( 16 );
-
-    if( hexval.length % 2 === 1 ) {
-        prefix += "0";
-    }
-
-    return prefix + hexval;
 };
 
 const overflow = ( num: number ): number => {
@@ -227,7 +211,7 @@ const readGrammar = (): HugoGrammars => {
                 g.type = "xverb";
                 break;
             default:
-                throw new Error( "Unknown verb type 0x"+verbType.toString( 16 )+" encountered while reading grammar" );
+                throw new Error( `Unknown verb type ${toHexString( verbType )} encountered while reading grammar` );
         }
 
         const verbcount = buffer[ ptr + 1 ],
@@ -275,7 +259,7 @@ const readGrammar = (): HugoGrammars => {
             }
 
             if( grammarByte !== 0x08 ) {
-                throw new Error( `Expected 0x08, 0x2c, 0x2d or 0xff when reading grammar, found 0x${grammarByte.toString( 16 )} instead at 0x${ptr.toString( 16 )}` );
+                throw new Error( `Expected 0x08, 0x2c, 0x2d or 0xff when reading grammar, found ${toHexString( grammarByte )} instead at ${toHexString( ptr )}` );
             }
 
             line = [];
@@ -390,7 +374,7 @@ const readSpecialWords = ( offset: number, specialwordcount: number ): HugoSpeci
         const wordArray = specialWords[ type ];
 
         if( !wordArray ) {
-            throw new Error( `Encountered an unknown special word category index ${buffer[ ptr ]} at 0x${ptr.toString( 16 )}` );
+            throw new Error( `Encountered an unknown special word category index ${buffer[ ptr ]} at ${toHexString( ptr )}` );
         }
 
         wordArray.push( specialWord );
@@ -419,22 +403,35 @@ const readTextbank = ( offset: number, offsetEnd: number ): HugoTextbank => {
     return textbank;
 };
 
+const findIFIDs = ( dictionary: HugoDictionary, textbank: HugoTextbank ): string[] => {
+    const ifids: Set<string> = new Set();
+    const words = [ ...Object.values( dictionary ), ...Object.values( textbank ) ];
+
+    words.forEach( text => {
+        const match = text.match( /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i );
+
+        if( match ) {
+            ifids.add( match[0] );
+        }
+    });
+
+    return Array.from( ifids );
+};
+
 const parseStoryFile = (): HugoStory => {
     const story: Partial<HugoStory> = {};
     let data, textbank, offset, counts;
 
     // check version
-    let storyVersion = buffer[ 0 ];
+    let compilerVersion = buffer[ 0 ];
 
-    if( storyVersion === 1 || storyVersion === 2 ) {
-        storyVersion *= 10;
+    if( compilerVersion === 1 || compilerVersion === 2 ) {
+        compilerVersion *= 10;
     }
 
-    if( storyVersion !== 31 ) {
-        throw new Error( "Invalid story file version or file not a Hugo story file. Only 3.1 supported, story file identifies as "
-                    + Math.floor( storyVersion / 10 ) + "." + ( storyVersion % 10 ) );
+    if( compilerVersion !== 31 ) {
+        throw new Error( "Invalid story file version or file not a Hugo story file. Only 3.1 supported, story file identifies itself as " + ( compilerVersion / 10 ).toFixed( 1 ) );
     }
-
 
     try {
         data = buffer[ 0x29 ];
@@ -505,9 +502,6 @@ const parseStoryFile = (): HugoStory => {
         debugStarts = buffer[ 0x3b ] + buffer[ 0x3b + 1 ] * 256 + buffer[ 0x3b + 2 ] * 256 * 256;
     }
 
-    // set special dictionary words
-    story.dictionary = {};
-
     story.arrays = readArrays( offset.arraytable, offset.specwordtable );
     story.code = readCode( offset.codestart, offset.objtable );
     story.counts = counts;
@@ -519,11 +513,13 @@ const parseStoryFile = (): HugoStory => {
     story.specialwords = readSpecialWords( offset.specwordtable, counts.specialWords );
     story.textbank = readTextbank( offset.textbank, debugStarts || buffer.length );
     story.word = [];
+    story.ifids = findIFIDs( story.dictionary, story.textbank );
 
+    // set special dictionary words
     story.dictionary[ PARSE$_INDEX ] = "";
     story.dictionary[ SERIAL$_INDEX ] = story.serial;
 
-    story.compilerVersion = 3.1;    // only one that's supported for now
+    story.compilerVersion = compilerVersion / 10;
 
     return story as HugoStory;
 };

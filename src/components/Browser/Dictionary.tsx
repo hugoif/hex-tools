@@ -1,7 +1,8 @@
 import React from "react";
 import Table from "react-bootstrap/table";
 
-import { HugoStory, toHexString } from "services/hexparser";
+import { toHexString } from "services/format";
+import { HugoStory } from "services/hexparser";
 
 interface DictionaryProps {
     data: HugoStory;

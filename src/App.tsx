@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Alert, Container } from "react-bootstrap";
+import Alert from "react-bootstrap/alert";
+import Container from "react-bootstrap/container";
 
 import HexUpload from "components/HexUpload";
 import { HugoStory, parseHexFile } from "services/hexparser";
