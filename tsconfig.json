@@ -7,7 +7,7 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "lib": [
       "dom",
       "dom.iterable",
@@ -16,11 +16,12 @@
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "target": "es5",
+    "target": "es2020",
     "typeRoots": [
       "./node_modules/@types/**/*",
       "./src/types/**/*"
@@ -31,7 +32,6 @@
     "src/**/*"
   ],
   "exclude": [
-    "node_modules",
-    ".storybook"
+    "node_modules"
   ]
 }
