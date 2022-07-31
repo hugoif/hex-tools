@@ -6,7 +6,9 @@ import Tabs from "react-bootstrap/tabs";
 
 import Dictionary from "./Dictionary";
 import FileInfo from "./FileInfo";
+import Objects from "./Objects";
 import Textbank from "./Textbank";
+import SpecialWords from "./SpecialWords";
 
 import type { HugoStory } from "services/hexparser";
 
@@ -26,11 +28,17 @@ const BrowserNavigation: React.FC<BrowserNavigationProps> = ({ data, onReset }) 
             <Tab eventKey="info" title="File Info">
                 <FileInfo data={data} />
             </Tab>
+            <Tab eventKey="textbank" title="Text Bank">
+                <Textbank data={data} />
+            </Tab>
             <Tab eventKey="dictionary" title="Dictionary">
                 <Dictionary data={data} />
             </Tab>
-            <Tab eventKey="textbank" title="Text Bank">
-                <Textbank data={data} />
+            <Tab eventKey="specialwords" title="Special Words">
+                <SpecialWords data={data} />
+            </Tab>
+            <Tab eventKey="objects" title="Objects">
+                <Objects data={data} />
             </Tab>
         </Tabs>
     </Container>;

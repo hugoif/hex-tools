@@ -14,7 +14,7 @@ interface HugoAddresses {
 
 type HugoArrays = { [key: number]: number[] };
 type HugoCode = number[];
-type HugoDictionary = {[key: number]: string};
+export type HugoDictionary = {[key: number]: string};
 
 interface HugoEvent {
     addr: number;
@@ -32,17 +32,17 @@ interface HugoGrammar {
 
 type HugoGrammars = HugoGrammar[];
 
-interface HugoObject {
-    attributes: boolean[];
+export interface HugoObject {
+    attributes: string[];
     child: number;
     parent: number;
     properties: HugoProperty[][];
     sibling: number;
 }
 
-type HugoObjects = HugoObject[];
-type HugoProperty = number | { routine: number };
-type HugoSpecialWord = { addr1: number, addr2: number };
+export type HugoObjects = HugoObject[];
+export type HugoProperty = number | { routine: number };
+export type HugoSpecialWord = { addr1: number, addr2: number };
 
 enum HugoSpecialWordCategory {
     SYNONYMS = "synonyms",
@@ -77,6 +77,32 @@ type HugoTextbank = {[key: number]: string};
 
 const SERIAL$_INDEX = -15;
 const PARSE$_INDEX = -16;
+
+const attributeNames = [
+    "known",
+    "moved/visited",
+    "static",
+    "plural",
+    "living",
+    "female",
+    "openable",
+    "open",
+    "lockable",
+    "locked",
+    "unfriendly",
+    "light",
+    "readable",
+    "switchable",
+    "switchedon/active",
+    "clothing",
+    "worn/mobile",
+    "enterable",
+    "container",
+    "platform",
+    "hidden",
+    "quiet",
+    "transparent"
+] as const;
 
 let propertyDefaults: HugoProperty[][] = [];
 let buffer: Uint8Array;
@@ -285,7 +311,13 @@ const readObjects = ( offset: number, objcount: number, proptableOffset: number 
             const attrByte = buffer[ attrBytePtr + ptr ];
             for( let attrBit = 0; attrBit < 8; ++attrBit ) {
                 if( attrByte & Math.pow( 2, attrBit ) ) {
-                    obj.attributes[ attrBit + attrBytePtr * 8 ] = true;
+                    const attrIndex = attrBit + attrBytePtr * 8;
+                    if( attrIndex >= attributeNames.length ) {
+                        obj.attributes.push( `custom (${attrIndex})` );
+                    }
+                    else {
+                        obj.attributes.push( attributeNames[attrIndex] );
+                    }
                 }
             }
         }

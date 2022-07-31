@@ -1,3 +1,11 @@
+export const signedInt = ( num: number ): number => {
+    if( num > 32767 ) {
+        return ( ( num + 32768 ) % 65536 ) - 32768;
+    }
+
+    return num;
+};
+
 export const toHexString = ( value: number | string ): string => {
     const num = Number( value );
     let prefix = "";
