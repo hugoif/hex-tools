@@ -141,9 +141,7 @@ const Objects: React.FC<ObjectsProps> = ({ data }) => {
                             </ul>}
                     </td>
                     <td>
-                        {obj.properties[7][0] > 0 && <li>
-                            Pronoun: {dictName( obj.properties[7][0] )}
-                        </li>}
+                        {obj.properties[7][0] > 0 && dictName( obj.properties[7][0] )}
                     </td>
                     <td>
                         <ul>
