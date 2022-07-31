@@ -12,21 +12,21 @@
     "deploy": "gh-pages -d build"
   },
   "dependencies": {
-    "react": "^18.0.0",
-    "react-bootstrap": "2.2.3",
-    "react-dom": "^18.0.0",
-    "react-dropzone": "12.0.5",
+    "react": "^18.2.0",
+    "react-bootstrap": "2.4.0",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "14.2.2",
     "react-scripts": "5.0.1"
   },
   "devDependencies": {
-    "@types/react": "18.0.5",
-    "@types/react-dom": "18.0.1",
-    "@typescript-eslint/eslint-plugin": "5.19.0",
-    "@typescript-eslint/parser": "5.19.0",
-    "eslint": "8.13.0",
-    "gh-pages": "3.2.3",
+    "@types/react": "18.0.15",
+    "@types/react-dom": "18.0.6",
+    "@typescript-eslint/eslint-plugin": "5.31.0",
+    "@typescript-eslint/parser": "5.31.0",
+    "eslint": "8.20.0",
+    "gh-pages": "4.0.0",
     "node-sass": "7.0.1",
-    "typescript": "4.6.3"
+    "typescript": "4.7.4"
   },
   "browserslist": {
     "production": [
